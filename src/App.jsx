@@ -32,7 +32,7 @@ export default function App() {
 
   try {
     setInfoLoading(true);
-    const res = await fetch(`https://meal-dice-app.onrender.com/fetch-info?meal=${meal}`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/fetch-info?meal=${meal}`);
     if (!res.ok) throw new Error("Fetch failed");
     const data = await res.json();
     setMealInfo(data);
