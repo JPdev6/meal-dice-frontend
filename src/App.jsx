@@ -73,8 +73,8 @@ export default function App() {
 
   if (!username) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">
-        <div className="bg-white rounded-3xl shadow-xl max-w-md w-full p-8 text-center space-y-6">
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 space-y-6 text-center">
           <h1 className="text-3xl font-bold text-green-800">👋 Welcome</h1>
           <p className="text-gray-500">Enter your name to start rolling meals!</p>
           <input
@@ -105,9 +105,10 @@ export default function App() {
           {showAdd ? "×" : "+"}
         </button>
 
-        <h1 className="text-2xl text-gray-600">Hi, <span className="font-bold text-green-800">{username}</span> 👋</h1>
-        <h2 className="text-3xl font-extrabold text-gray-800">🎲 Meal Dice</h2>
-        <p className="text-gray-500">Add meals you love, then let the dice choose</p>
+        <h1 className="text-3xl font-bold text-emerald-800">🎲 Meal Dice</h1>
+        <p className="text-gray-500 text-sm leading-tight">
+          Feeling hungry but can’t decide?<br />Let the dice choose for you.
+        </p>
 
         {rolling ? (
           <lottie-player
@@ -121,20 +122,21 @@ export default function App() {
           <button
               onClick={rollDice}
               disabled={meals.length === 0}
-              className={`w-full rounded-full text-white text-lg font-semibold py-3 transition ${
+              className={`w-full py-3 text-white font-bold text-lg rounded-full transition ${
                 meals.length === 0
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-green-600 hover:bg-green-700"
               }`}
             >
               {rolling ? "Rolling..." : "Roll the Dice"}
-         </button>
+            </button>
         )}
 
         {selectedMeal && (
-          <div className="bg-green-50 text-left p-5 rounded-2xl text-gray-800 space-y-2">
-            <h2 className="font-semibold text-lg">🥗 Your Meal:</h2>
-            <p className="text-xl font-bold">{selectedMeal}</p>
+          <div className="bg-emerald-50 p-4 rounded-xl space-y-1 text-left">
+            <p className="text-md font-semibold text-emerald-700">🥗 Your Meal:</p>
+            <h3 className="text-lg font-bold">{selectedMeal}</h3>
+            <p className="text-sm italic text-gray-600">🍓"{quote}"</p>
           </div>
         )}
 
