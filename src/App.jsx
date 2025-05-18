@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "@lottiefiles/lottie-player";
-
+import React from "react";
 
 export default function App() {
   const [mealInfo, setMealInfo] = useState(null);
