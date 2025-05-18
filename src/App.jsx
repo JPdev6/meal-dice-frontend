@@ -3,6 +3,7 @@ import "@lottiefiles/lottie-player";
 import React from "react";
 
 export default function App() {
+  const API = import.meta.env.VITE_API_URL;
   const [mealInfo, setMealInfo] = useState(null);
   const [infoLoading, setInfoLoading] = useState(false);
   const [infoError, setInfoError] = useState(null);
