@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import "@lottiefiles/lottie-player";
-import React from "react";
 
 export default function App() {
-  const API = import.meta.env.VITE_API_URL;
-  const [mealInfo, setMealInfo] = useState(null);
-  const [infoLoading, setInfoLoading] = useState(false);
-  const [infoError, setInfoError] = useState(null);
   const [username, setUsername] = useState(() => localStorage.getItem("username") || "");
   const [nameInput, setNameInput] = useState("");
   const [meals, setMeals] = useState(() => {
@@ -22,30 +17,15 @@ export default function App() {
     localStorage.setItem("meals", JSON.stringify(meals));
   }, [meals]);
 
-  const rollDice = async () => {
-  if (meals.length === 0) return;
-
-  setRolling(true);
-  setInfoError(null);
-  setMealInfo(null);
-  const meal = meals[Math.floor(Math.random() * meals.length)];
-  setSelectedMeal(meal);
-
-  try {
-    setInfoLoading(true);
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/fetch-info?meal=${meal}`);
-    if (!res.ok) throw new Error("Fetch failed");
-    const data = await res.json();
-    setMealInfo(data);
-  } catch (err) {
-    setInfoError("❌ Could not load meal info.");
-  } finally {
-    setInfoLoading(false);
-    setRolling(false);
-  }
+  const rollDice = () => {
+    if (meals.length === 0) return;
+    setRolling(true);
+    setTimeout(() => {
+      const meal = meals[Math.floor(Math.random() * meals.length)];
+      setSelectedMeal(meal);
+      setRolling(false);
+    }, 1500);
   };
-
-
 
   const addMeal = () => {
     if (!newMeal.trim()) return;
@@ -74,8 +54,8 @@ export default function App() {
 
   if (!username) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white flex items-center justify-center px-4">
-        <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 space-y-6 text-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">
+        <div className="bg-white rounded-3xl shadow-xl max-w-md w-full p-8 text-center space-y-6">
           <h1 className="text-3xl font-bold text-green-800">👋 Welcome</h1>
           <p className="text-gray-500">Enter your name to start rolling meals!</p>
           <input
@@ -106,10 +86,10 @@ export default function App() {
           {showAdd ? "×" : "+"}
         </button>
 
-        <h1 className="text-3xl font-bold text-emerald-800">🎲 Meal Dice</h1>
-        <p className="text-gray-500 text-sm leading-tight">
-          Feeling hungry but can’t decide?<br />Let the dice choose for you.
-        </p>
+        <h1 className="text-2xl text-gray-600">Hi, <span className="font-bold text-green-800">{username}</span> 👋</h1>
+
+        <h2 className="text-3xl font-extrabold text-gray-800">🎲 Meal Dice</h2>
+        <p className="text-gray-500">Add meals you love, then let the dice choose</p>
 
         {rolling ? (
           <lottie-player
@@ -121,76 +101,19 @@ export default function App() {
           ></lottie-player>
         ) : (
           <button
-              onClick={rollDice}
-              disabled={meals.length === 0}
-              className={`w-full py-3 text-white font-bold text-lg rounded-full transition ${
-                meals.length === 0
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-green-600 hover:bg-green-700"
-              }`}
-            >
-              {rolling ? "Rolling..." : "Roll the Dice"}
-            </button>
+            onClick={rollDice}
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl"
+          >
+            Roll the Dice
+          </button>
         )}
 
         {selectedMeal && (
-          <div className="bg-emerald-50 p-4 rounded-xl space-y-1 text-left">
-            <p className="text-md font-semibold text-emerald-700">🥗 Your Meal:</p>
-            <h3 className="text-lg font-bold">{selectedMeal}</h3>
-            <p className="text-sm italic text-gray-600">🍓"{quote}"</p>
+          <div className="bg-green-50 text-left p-5 rounded-2xl text-gray-800 space-y-2">
+            <h2 className="font-semibold text-lg">🥗 Your Meal:</h2>
+            <p className="text-xl font-bold">{selectedMeal}</p>
           </div>
         )}
-
-        {/* 📦 NEW INFO UI BLOCK — PASTE BELOW */}
-        {infoLoading && (
-          <div className="text-sm text-gray-500 animate-pulse">Loading meal info...</div>
-        )}
-
-        {infoError && (
-          <div className="text-red-500 text-sm font-medium">{infoError}</div>
-        )}
-
-
-        {mealInfo && !infoLoading && !infoError && (
-          <div className="bg-lime-50 mt-4 text-left p-5 rounded-2xl shadow space-y-3">
-            <h3 className="text-lg font-bold text-green-700">🍽 {mealInfo.title}</h3>
-
-            {mealInfo.ingredients?.length > 0 && (
-              <details className="text-sm">
-                <summary className="cursor-pointer text-green-600 font-medium mb-1">🧂 Ingredients</summary>
-                <ul className="list-disc list-inside ml-4">
-                  {mealInfo.ingredients.map((ing, i) => <li key={i}>{ing}</li>)}
-                </ul>
-              </details>
-            )}
-
-            <details className="text-sm">
-              <summary className="cursor-pointer text-green-600 font-medium mb-1">📖 Wikipedia Summary</summary>
-              <p className="mt-1 text-gray-600 italic">{mealInfo.wikipedia_summary}</p>
-            </details>
-
-            <details className="text-sm">
-              <summary className="cursor-pointer text-green-600 font-medium mb-1">🧵 Reddit Health Threads</summary>
-              <div className="mt-1 space-y-1">
-                {mealInfo.reddit_results?.map((r, i) => (
-                  <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline block">
-                    🔗 {r.title}
-                  </a>
-                ))}
-              </div>
-            </details>
-
-            <a
-              href={mealInfo.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-2 text-green-700 hover:underline text-sm font-medium"
-            >
-              📜 View full recipe on Akis →
-            </a>
-          </div>
-        )}
-
 
         {showAdd && (
           <div className="mt-6 space-y-3 text-left">
