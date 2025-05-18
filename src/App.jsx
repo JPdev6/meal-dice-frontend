@@ -74,7 +74,7 @@ export default function App() {
 
   if (!username) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 space-y-6 text-center">
           <h1 className="text-3xl font-bold text-green-800">👋 Welcome</h1>
           <p className="text-gray-500">Enter your name to start rolling meals!</p>
